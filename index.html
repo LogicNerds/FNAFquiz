@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Which FNAF Animatronic Are You?</title>
+    <style>
+        /* ============================================
+           FONTS & BASE STYLES
+           ============================================ */
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Animated background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(0deg, transparent 24%, rgba(138, 43, 226, 0.05) 25%, rgba(138, 43, 226, 0.05) 26%, transparent 27%, transparent 74%, rgba(138, 43, 226, 0.05) 75%, rgba(138, 43, 226, 0.05) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(138, 43, 226, 0.05) 25%, rgba(138, 43, 226, 0.05) 26%, transparent 27%, transparent 74%, rgba(138, 43, 226, 0.05) 75%, rgba(138, 43, 226, 0.05) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+            animation: gridScroll 20s linear infinite;
+            z-index: 0;
+            opacity: 0.3;
+        }
+
+        @keyframes gridScroll {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(50px, 50px);
+            }
+        }
+
+        /* ============================================
+           CONTAINER & LAYOUT
+           ============================================ */
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* ============================================
+           SCREENS (Start, Question, Result)
+           ============================================ */
+        .screen {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============================================
+           START SCREEN
+           ============================================ */
+        .start-screen {
+            text-align: center;
+        }
+
+        .title {
+            font-size: clamp(18px, 5vw, 28px);
+            color: #ff00ff;
+            text-shadow: 
+                0 0 10px #ff00ff,
+                0 0 20px #ff00ff,
+                3px 3px 0 #8b008b;
+            margin-bottom: 30px;
+            line-height: 1.4;
+            animation: glitchTitle 3s infinite;
+        }
+
+        @keyframes glitchTitle {
+            0%, 90%, 100% {
+                text-shadow: 
+                    0 0 10px #ff00ff,
+                    0 0 20px #ff00ff,
+                    3px 3px 0 #8b008b;
+            }
+            95% {
+                text-shadow: 
+                    0 0 10px #00ffff,
+                    0 0 20px #00ffff,
+                    -3px 3px 0 #008b8b;
+            }
+        }
+
+        .title-graphic {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #8b008b, #4b0082);
+            border: 4px solid #ff00ff;
+            box-shadow: 
+                0 0 20px rgba(255, 0, 255, 0.5),
+                inset 0 0 20px rgba(255, 0, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background-image: url('freddy.jpg');
+            background-size: cover;
+            background-position: center;
+            animation: titleFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes titleFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* ============================================
+           BUTTONS
+           ============================================ */
+        .btn {
+            background: linear-gradient(135deg, #ff00ff, #8b00ff);
+            border: 3px solid #fff;
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(12px, 3vw, 16px);
+            padding: 15px 30px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            box-shadow: 
+                0 4px 0 #8b008b,
+                0 0 20px rgba(255, 0, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 0 #8b008b,
+                0 0 30px rgba(255, 0, 255, 0.8);
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 
+                0 2px 0 #8b008b,
+                0 0 15px rgba(255, 0, 255, 0.5);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        /* ============================================
+           QUESTION SCREEN
+           ============================================ */
+        .question-screen {
+            text-align: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #1a1a1a;
+            border: 2px solid #ff00ff;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff00ff, #00ffff);
+            transition: width 0.3s ease-out;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.8);
+        }
+
+        .question-number {
+            font-size: 14px;
+            color: #00ffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        .question-text {
+            font-size: clamp(16px, 4vw, 20px);
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .answer-btn {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border: 3px solid #ff00ff;
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(10px, 2.5vw, 14px);
+            padding: 15px 20px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            position: relative;
+            line-height: 1.5;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        }
+
+        .answer-btn:hover {
+            background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
+            border-color: #00ffff;
+            transform: translateX(5px);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .answer-btn:active {
+            transform: scale(0.98);
+        }
+
+        .answer-btn::before {
+            content: '▶';
+            position: absolute;
+            left: -20px;
+            opacity: 0;
+            transition: all 0.2s;
+            color: #00ffff;
+        }
+
+        .answer-btn:hover::before {
+            left: 10px;
+            opacity: 1;
+        }
+
+        /* ============================================
+           RESULT SCREEN
+           ============================================ */
+        .result-screen {
+            text-align: center;
+        }
+
+        .result-title {
+            font-size: clamp(14px, 3.5vw, 18px);
+            color: #00ffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        .character-portrait {
+            width: 250px;
+            height: 250px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border: 4px solid #ff00ff;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 255, 0.6),
+                inset 0 0 30px rgba(255, 0, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            animation: portraitPulse 2s ease-in-out infinite;
+            background-size: cover;
+            background-position: center;
+        }
+
+        @keyframes portraitPulse {
+            0%, 100% {
+                box-shadow: 
+                    0 0 30px rgba(255, 0, 255, 0.6),
+                    inset 0 0 30px rgba(255, 0, 255, 0.2);
+            }
+            50% {
+                box-shadow: 
+                    0 0 50px rgba(255, 0, 255, 0.8),
+                    inset 0 0 50px rgba(255, 0, 255, 0.3);
+            }
+        }
+
+        .character-name {
+            font-size: clamp(20px, 5vw, 28px);
+            color: #ff00ff;
+            margin-bottom: 20px;
+            text-shadow: 
+                0 0 10px #ff00ff,
+                2px 2px 0 #000;
+        }
+
+        .character-description {
+            font-size: clamp(12px, 3vw, 14px);
+            color: #ccc;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        .restart-btn {
+            margin-top: 20px;
+        }
+
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+        .slide-in {
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .pixel-pop {
+            animation: pixelPop 0.3s ease-out;
+        }
+
+        @keyframes pixelPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            .title-graphic,
+            .character-portrait {
+                width: 180px;
+                height: 180px;
+            }
+
+            .character-portrait {
+                font-size: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ============================================
+             AUDIO (Background Music)
+             ============================================ -->
+        <audio id="bgMusic" loop>
+            <source src="glitch-in-the-dark-306765.mp3" type="audio/mpeg">
+        </audio>
+
+        <!-- ============================================
+             START SCREEN
+             ============================================ -->
+        <div class="screen start-screen active">
+            <div class="title-graphic"></div>
+            <h1 class="title">Which FNAF Animatronic Are You?</h1>
+            <button class="btn" onclick="startQuiz()">Start Quiz</button>
+        </div>
+
+        <!-- ============================================
+             QUESTION SCREEN
+             ============================================ -->
+        <div class="screen question-screen">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="question-number" id="questionNumber"></div>
+            <h2 class="question-text" id="questionText"></h2>
+            <div class="answers" id="answersContainer"></div>
+        </div>
+
+        <!-- ============================================
+             RESULT SCREEN
+             ============================================ -->
+        <div class="screen result-screen">
+            <h3 class="result-title">You Are...</h3>
+            <div class="character-portrait" id="characterPortrait"></div>
+            <h2 class="character-name" id="characterName"></h2>
+            <p class="character-description" id="characterDescription"></p>
+            <button class="btn restart-btn" onclick="restartQuiz()">Take Again</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CHARACTER DATA
+        // ============================================
+        const characters = {
+            freddy: {
+                name: 'Freddy Fazbear',
+                image: 'freddy.jpg',
+                description: 'Responsible, steady, quietly powerful. You\'re the one who keeps the group together whether you meant to or not.'
+            },
+            bonnie: {
+                name: 'Bonnie',
+                image: 'bonnie.jpg',
+                description: 'Deep feeler, deep thinker. Creative, emotional, and stronger than people realize.'
+            },
+            chica: {
+                name: 'Chica',
+                image: 'chica.jpg',
+                description: 'Friendly chaos with snack energy. You\'re unpredictable in the fun way.'
+            },
+            foxy: {
+                name: 'Foxy',
+                image: 'foxy.jpg',
+                description: 'Adrenaline-powered wild card. Competitive, fast, and allergic to sitting still.'
+            },
+            goldenFreddy: {
+                name: 'Golden Freddy',
+                image: 'goldenfreddy.jpg',
+                description: 'Silent, intense, and strangely wise. You give off "knows the secrets" energy.'
+            },
+            springtrap: {
+                name: 'Springtrap',
+                image: 'springtrap.jpg',
+                description: 'Stubborn, aggressive, sarcastic. You operate on pure willpower and dark humor.'
+            },
+            circusBaby: {
+                name: 'Circus Baby',
+                image: 'circus baby.jpg',
+                description: 'Smart, calculating, charming. You\'re polite outside and strategic inside.'
+            }
+        };
+
+        // ============================================
+        // QUESTIONS DATA
+        // Each answer maps to a character key
+        // ============================================
+        const questions = [
+            {
+                question: "What's your vibe in a stressful situation?",
+                answers: [
+                    { text: "Take charge and keep everyone calm", character: 'freddy' },
+                    { text: "Try to think through every detail", character: 'bonnie' },
+                    { text: "Pretend everything's fine while snacking", character: 'chica' },
+                    { text: "Run toward the problem like an idiot", character: 'foxy' },
+                    { text: "Go silent and freak everyone out", character: 'goldenFreddy' },
+                    { text: "Get angry and handle it alone", character: 'springtrap' },
+                    { text: "Smile, plan, and solve quietly", character: 'circusBaby' }
+                ]
+            },
+            {
+                question: "How do you handle rules?",
+                answers: [
+                    { text: "Follow them", character: 'freddy' },
+                    { text: "Try your best but overthink them", character: 'bonnie' },
+                    { text: "Break them accidentally", character: 'chica' },
+                    { text: "Break them intentionally", character: 'foxy' },
+                    { text: "Ignore them entirely", character: 'goldenFreddy' },
+                    { text: "Threaten the rules", character: 'springtrap' },
+                    { text: "Pretend to follow them, don't", character: 'circusBaby' }
+                ]
+            },
+            {
+                question: "Choose a hiding spot:",
+                answers: [
+                    { text: "Office corner", character: 'freddy' },
+                    { text: "Backstage", character: 'bonnie' },
+                    { text: "Kitchen", character: 'chica' },
+                    { text: "Pirate's Cove", character: 'foxy' },
+                    { text: 'Nowhere. You "appear"', character: 'goldenFreddy' },
+                    { text: "In the walls", character: 'springtrap' },
+                    { text: "In plain sight but somehow unnoticed", character: 'circusBaby' }
+                ]
+            },
+            {
+                question: "What annoys you the most?",
+                answers: [
+                    { text: "People being irresponsible", character: 'freddy' },
+                    { text: "Loud, overwhelming chaos", character: 'bonnie' },
+                    { text: "Someone eating your food", character: 'chica' },
+                    { text: "Waiting", character: 'foxy' },
+                    { text: "People asking too many questions", character: 'goldenFreddy' },
+                    { text: "Being told to calm down", character: 'springtrap' },
+                    { text: "People thinking you're harmless", character: 'circusBaby' }
+                ]
+            },
+            {
+                question: "Pick a nighttime job:",
+                answers: [
+                    { text: "Security guard", character: 'freddy' },
+                    { text: "Technician", character: 'bonnie' },
+                    { text: "Baker", character: 'chica' },
+                    { text: "Stunt performer", character: 'foxy' },
+                    { text: "Haunt things", character: 'goldenFreddy' },
+                    { text: "Exterminator", character: 'springtrap' },
+                    { text: "Entertainer", character: 'circusBaby' }
+                ]
+            },
+            {
+                question: "Your social energy level?",
+                answers: [
+                    { text: "Moderate, steady", character: 'freddy' },
+                    { text: "Low, selective", character: 'bonnie' },
+                    { text: "High, chaotic", character: 'chica' },
+                    { text: "High, competitive", character: 'foxy' },
+                    { text: "Varies wildly", character: 'goldenFreddy' },
+                    { text: "Depends on if you hate everyone today", character: 'springtrap' },
+                    { text: "Polished, controlled socializing", character: 'circusBaby' }
+                ]
+            },
+            {
+                question: "Someone insults you. Reaction?",
+                answers: [
+                    { text: "Firm boundary", character: 'freddy' },
+                    { text: "Take it personally", character: 'bonnie' },
+                    { text: "Laugh it off (but remember it)", character: 'chica' },
+                    { text: "Yell back instantly", character: 'foxy' },
+                    { text: "Stare at them deeply", character: 'goldenFreddy' },
+                    { text: "Hunt them", character: 'springtrap' },
+                    { text: "Outsmart them later", character: 'circusBaby' }
+                ]
+            },
+            {
+                question: "Preferred movement style:",
+                answers: [
+                    { text: "Slow and steady", character: 'freddy' },
+                    { text: "Quiet steps", character: 'bonnie' },
+                    { text: "Wandering aimlessly", character: 'chica' },
+                    { text: "Sprinting from shadows", character: 'foxy' },
+                    { text: "Teleporting", character: 'goldenFreddy' },
+                    { text: "Skittering", character: 'springtrap' },
+                    { text: "Graceful and calculated", character: 'circusBaby' }
+                ]
+            },
+            {
+                question: "Pick a weapon:",
+                answers: [
+                    { text: "Leadership", character: 'freddy' },
+                    { text: "Guilt", character: 'bonnie' },
+                    { text: "Food", character: 'chica' },
+                    { text: "Speed", character: 'foxy' },
+                    { text: "Reality glitches", character: 'goldenFreddy' },
+                    { text: "Rage", character: 'springtrap' },
+                    { text: "Manipulation", character: 'circusBaby' }
+                ]
+            },
+            {
+                question: "What scares other people about you?",
+                answers: [
+                    { text: "Dependable even when everyone else panics", character: 'freddy' },
+                    { text: "You feel things deeply", character: 'bonnie' },
+                    { text: "Your unpredictability", character: 'chica' },
+                    { text: "Your intensity", character: 'foxy' },
+                    { text: "Everything", character: 'goldenFreddy' },
+                    { text: "Your temper", character: 'springtrap' },
+                    { text: "Your smile", character: 'circusBaby' }
+                ]
+            }
+        ];
+
+        // ============================================
+        // STATE MANAGEMENT
+        // ============================================
+        let currentQuestionIndex = 0;
+        let scores = {
+            freddy: 0,
+            bonnie: 0,
+            chica: 0,
+            foxy: 0,
+            goldenFreddy: 0,
+            springtrap: 0,
+            circusBaby: 0
+        };
+
+        // ============================================
+        // SCREEN MANAGEMENT
+        // ============================================
+        function showScreen(screenClass) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.querySelector(`.${screenClass}`).classList.add('active');
+        }
+
+        // ============================================
+        // QUIZ FLOW
+        // ============================================
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            scores = {
+                freddy: 0,
+                bonnie: 0,
+                chica: 0,
+                foxy: 0,
+                goldenFreddy: 0,
+                springtrap: 0,
+                circusBaby: 0
+            };
+            
+            // Start background music
+            const music = document.getElementById('bgMusic');
+            music.volume = 0.3; // Set volume to 30%
+            music.play().catch(e => {
+                // Browsers may block autoplay, this handles it gracefully
+                console.log('Audio autoplay prevented:', e);
+            });
+            
+            showScreen('question-screen');
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const question = questions[currentQuestionIndex];
+            
+            // Update progress bar
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            // Update question number
+            document.getElementById('questionNumber').textContent = 
+                `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            
+            // Update question text
+            document.getElementById('questionText').textContent = question.question;
+            
+            // Create answer buttons
+            const answersContainer = document.getElementById('answersContainer');
+            answersContainer.innerHTML = '';
+            
+            question.answers.forEach((answer, index) => {
+                const button = document.createElement('button');
+                button.className = 'answer-btn slide-in';
+                button.textContent = answer.text;
+                button.style.animationDelay = `${index * 0.05}s`;
+                button.onclick = () => selectAnswer(answer.character);
+                answersContainer.appendChild(button);
+            });
+        }
+
+        function selectAnswer(character) {
+            // Increment score for selected character
+            scores[character]++;
+            
+            // Move to next question or show results
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                displayQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        // ============================================
+        // RESULTS CALCULATION
+        // ============================================
+        function showResults() {
+            const result = calculateResult();
+            const character = characters[result];
+            
+            // Update result screen with character image
+            const portrait = document.getElementById('characterPortrait');
+            portrait.style.backgroundImage = `url('${character.image}')`;
+            
+            document.getElementById('characterName').textContent = character.name;
+            document.getElementById('characterDescription').textContent = character.description;
+            
+            showScreen('result-screen');
+        }
+
+        function calculateResult() {
+            // Find the highest score
+            let maxScore = 0;
+            let winners = [];
+            
+            for (let char in scores) {
+                if (scores[char] > maxScore) {
+                    maxScore = scores[char];
+                    winners = [char];
+                } else if (scores[char] === maxScore) {
+                    winners.push(char);
+                }
+            }
+            
+            // If there's a tie, use priority ranking
+            if (winners.length > 1) {
+                return breakTie(winners);
+            }
+            
+            return winners[0];
+        }
+
+        function breakTie(winners) {
+            // Priority ranking for tie-breaking
+            // Darker/edgier characters get priority
+            const priority = [
+                'springtrap',
+                'goldenFreddy',
+                'foxy',
+                'circusBaby',
+                'chica',
+                'bonnie',
+                'freddy'
+            ];
+            
+            for (let char of priority) {
+                if (winners.includes(char)) {
+                    return char;
+                }
+            }
+            
+            return winners[0];
+        }
+
+        // ============================================
+        // RESTART
+        // ============================================
+        function restartQuiz() {
+            showScreen('start-screen');
+        }
+    </script>
+</body>
+</html>
